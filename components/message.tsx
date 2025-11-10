@@ -210,10 +210,16 @@ function ComputerInvocation({
   const IconComponent = descriptor.icon;
   const { state, result } = part.toolInvocation;
   const imgRef = useRef<HTMLImageElement>(null);
+  const resultText =
+    typeof result === "string"
+      ? result
+      : typeof result?.text === "string"
+        ? result.text
+        : undefined;
 
   const handleImageLoad = () => {
     if (imgRef.current) {
-      imgRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      imgRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
     }
   };
 
@@ -247,6 +253,9 @@ function ComputerInvocation({
           />
         </div>
       ) : null}
+      {state === "result" && resultText ? (
+        <p className="text-xs text-zinc-600 dark:text-zinc-400">{resultText}</p>
+      ) : null}
     </div>
   );
 }
@@ -269,6 +278,12 @@ function BashInvocation({
       : "...";
 
   const statusIcon = renderInvocationStatus(state, isLatestMessage, status, result);
+  const resultText =
+    typeof result === "string"
+      ? result
+      : typeof result?.text === "string"
+        ? result.text
+        : undefined;
 
   return (
     <div className="flex items-center gap-3 rounded-md border border-zinc-200 bg-zinc-50 p-3 text-sm dark:border-zinc-800 dark:bg-zinc-900">
@@ -281,6 +296,11 @@ function BashInvocation({
             {state === "streaming" ? "Generating command" : "Running command"}
           </span>
           <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400">{displayCommand}</span>
+          {state === "result" && resultText ? (
+            <span className="mt-2 block font-mono text-xs text-zinc-600 dark:text-zinc-300">
+              {resultText}
+            </span>
+          ) : null}
         </div>
       </div>
       <div className="flex h-5 w-5 items-center justify-center">{statusIcon}</div>
